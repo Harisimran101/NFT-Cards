@@ -5,67 +5,108 @@ import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136/examples/jsm/loa
 
 // If you face any problem contact me at harisimran1012@gmail.com
 
-const scene = new THREE.Scene();
 
-// Background Color
-scene.background = new THREE.Color('grey')
+function NFTCard(modetoload,name,appendto){
 
-			const camera = new THREE.PerspectiveCamera( 55, window.innerWidth / window.innerHeight, 0.1, 1000 );
-			camera.position.z = 7;
+    const nftcard = document.createElement('div')
+    nftcard.innerHTML = `
+      <div class="nft-card">
+        <canvas id="${name}"></canvas>
+        <p class="nft-card-name">${name}</p>
+        <div class="gradient-bar"></div>
+      </div>
+    `
 
-			const renderer = new THREE.WebGLRenderer({
-                antialias: true
-            });
-			renderer.setSize( window.innerWidth, window.innerHeight );
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-		    renderer.toneMappingExposure = 0.85;
-			renderer.outputEncoding = THREE.sRGBEncoding;
-			document.body.appendChild( renderer.domElement );
+    document.querySelector('.container').appendChild(nftcard)
 
-            // Orbit Controls
+    const canvas = document.querySelector(`#${name}`)
 
- 			const controls = new OrbitControls( camera, renderer.domElement );
-            controls.enableDamping = true;
-            controls.dampingFactor = 0.05
-            controls.enablePan = false
-            controls.minDistance = 3;
-            controls.maxDistance = 11;
+    const scene = new THREE.Scene();
 
+    // Background Color
+    scene.background = new THREE.Color('#E1E2E1')
+    
+                const camera = new THREE.PerspectiveCamera( 55, canvas.offsetWidth / canvas.offsetHeight, 0.1, 1000 );
+                camera.position.z = 7;
+    
+                const renderer = new THREE.WebGLRenderer({
+                    antialias: true,
+                    canvas: canvas,
+                });
+                renderer.setSize( canvas.offsetWidth, canvas.offsetHeight );
+                renderer.toneMapping = THREE.ACESFilmicToneMapping;
+                renderer.toneMappingExposure = 0.85;
+                renderer.outputEncoding = THREE.sRGBEncoding;
+    
+                // Orbit Controls
+    
+                 const controls = new OrbitControls( camera, renderer.domElement );
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.05
+                controls.enablePan = false,
+                controls.enableZoom = false
+                controls.enableRotate = false;
 
-      // Model Loading
-            const loader = new GLTFLoader()
-            loader.load('card-1.glb', (gltf) =>{
-                 let model = gltf.scene;
-                 scene.add(model)
-            })
+                controls.autoRotateSpeed = 16
 
-            // RGBELoader
+                canvas.addEventListener('pointerover', () =>{
+                   controls.autoRotate = true
+                } )
 
-            new RGBELoader().load('Environment.hdr',function(texture){
-                texture.mapping = THREE.EquirectangularReflectionMapping;
-                   scene.environment = texture;
+                canvas.addEventListener('pointerleave', () =>{
+                  controls.autoRotate = false
+
+                } )
+    
+    
+          // Model Loading
+                const loader = new GLTFLoader()
+                loader.load(modetoload, (gltf) =>{
+                     let model = gltf.scene;
+                     scene.add(model)
                 })
-			
-                // Resize  
+    
+                // RGBELoader
+    
+                new RGBELoader().load('Environment.hdr',function(texture){
+                    texture.mapping = THREE.EquirectangularReflectionMapping;
+                       scene.environment = texture;
+                    })
+                
+                    // Resize  
+    
+                    window.addEventListener('resize', function()
+    
+                    {
+                
+                    renderer.setSize( canvas.offsetWidth,  canvas.offsetHeight );
+                    camera.aspect =  canvas.offsetWidth /   canvas.offsetHeight;
+                    camera.updateProjectionMatrix();
+                
+                    } );
+                            
+    
+    
+    
+                function animate() {
+                    requestAnimationFrame( animate );
+    
+                  controls.update()
+                    renderer.render( scene, camera );
+                };
+    
+                animate();   
+}
 
-                window.addEventListener('resize', function()
+let api = [
+   {path: 'card-1.glb',name: 'Golden'},
+   {path: 'card-2.glb',name: 'Silver'},
+   {path: 'card-3.glb',name: 'Diamond'},
+   {path: 'card-4.glb',name: 'Grey'},
+   {path: 'card-5.glb',name: 'Super'},
+]
 
-                {
-            
-                renderer.setSize( window.innerWidth,  window.innerHeight );
-                camera.aspect =  window.innerWidth /  window.innerHeight;
-                camera.updateProjectionMatrix();
-            
-                } );
-                        
+api.forEach((el,i) =>{
+  NFTCard(el.path,el.name,document.querySelector('.container'))
+})
 
-
-
-			function animate() {
-				requestAnimationFrame( animate );
-
-              controls.update()
-				renderer.render( scene, camera );
-			};
-
-			animate();
