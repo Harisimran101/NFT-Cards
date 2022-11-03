@@ -5,7 +5,6 @@ import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136/examples/jsm/loa
 
 // If you face any problem contact me at harisimran1012@gmail.com
 
-
 function NFTCard(modetoload,name,appendto){
 
     const nftcard = document.createElement('div')
@@ -57,13 +56,15 @@ function NFTCard(modetoload,name,appendto){
                   controls.autoRotate = false
 
                 } )
-    
-    
+
+
+
           // Model Loading
                 const loader = new GLTFLoader()
                 loader.load(modetoload, (gltf) =>{
                      let model = gltf.scene;
                      scene.add(model)
+            
                 })
     
                 // RGBELoader
@@ -72,6 +73,11 @@ function NFTCard(modetoload,name,appendto){
                     texture.mapping = THREE.EquirectangularReflectionMapping;
                        scene.environment = texture;
                     })
+
+                    const light = new THREE.AmbientLight( 0x404040 ); // soft white light
+scene.add( light );
+
+               
                 
                     // Resize  
     
@@ -101,8 +107,8 @@ function NFTCard(modetoload,name,appendto){
 let api = [
    {path: 'card-1.glb',name: 'Golden'},
    {path: 'card-2.glb',name: 'Silver'},
-   {path: 'card-3.glb',name: 'Diamond'},
-   {path: 'card-4.glb',name: 'Grey'},
+  {path: 'card-3.glb',name: 'Diamond'},
+    {path: 'card-4.glb',name: 'Grey'},
    {path: 'card-5.glb',name: 'Super'},
 ]
 
