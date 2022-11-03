@@ -18,6 +18,15 @@ canvas {
      cursor: pointer;
 }
 
+.canvas-container {
+     position: relative;
+     width: calc(100% - 10%);
+     height: 400px;
+     border-radius: 9px;
+     box-shadow: 0 3px 4px rgba(0,0,0,0.2);
+     overflow: hidden;
+}
+
 .nft-card {
      position: relative;
      width: 300px;
@@ -31,10 +40,8 @@ canvas {
 }
 
 .nft-card canvas {
-     width: calc(100% - 10%);
-     height: 400px;
-     border-radius: 9px;
-     box-shadow: 0 3px 4px rgba(0,0,0,0.2)
+     width: 100%;
+     height: 100%;
 }
 
 .nft-card-name {
@@ -49,4 +56,26 @@ canvas {
     height: 5px;
     background: rgb(252,137,162);
 background: linear-gradient(270deg, rgba(252,137,162,1) 0%, rgba(183,226,168,1) 90%);
+}
+
+.preloader {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgb(249,123,149);
+      background: linear-gradient(322deg, rgba(249,123,149,1) 0%, rgba(169,232,147,1) 100%);      display: grid;
+      place-items: center;
+      transition: all 0.5s ease;
+      pointer-events: none;
+}
+
+.hide-preloader {
+      opacity: 0;
+}
+
+.preloader h1 {
+      font-size: 45px;
+      color: white;
 }

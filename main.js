@@ -2,15 +2,30 @@ import * as THREE from 'https://cdn.skypack.dev/three@0.136';
 import { OrbitControls } from 'https://cdn.skypack.dev/three@0.136/examples/jsm/controls/OrbitControls.js';
 import { RGBELoader } from 'https://cdn.skypack.dev/three@0.136/examples/jsm/loaders/RGBELoader.js';
 import { GLTFLoader } from 'https://cdn.skypack.dev/three@0.136/examples/jsm/loaders/GLTFLoader.js';
+import { LoadingManager } from 'https://cdn.skypack.dev/three@0.136/src/loaders/LoadingManager.js';
 
 // If you face any problem contact me at harisimran1012@gmail.com
+
+function loadtexture(loadtexture){
+   const textureloader = new THREE.TextureLoader();
+  return textureloader.load(loadtexture)
+}
 
 function NFTCard(modetoload,name,appendto){
 
     const nftcard = document.createElement('div')
     nftcard.innerHTML = `
       <div class="nft-card">
+
+        <div class="canvas-container">
+
+        <div class="preloader ${name}-preloader">
+         <h1 id="${name}-preloader-text">0%</h1>
+        </div>
+
         <canvas id="${name}"></canvas>
+        </div>
+        
         <p class="nft-card-name">${name}</p>
         <div class="gradient-bar"></div>
       </div>
@@ -60,10 +75,45 @@ function NFTCard(modetoload,name,appendto){
 
 
           // Model Loading
-                const loader = new GLTFLoader()
+
+          const manager = new THREE.LoadingManager();
+manager.onStart = function ( url, itemsLoaded, itemsTotal ) {
+
+
+};
+
+manager.onLoad = function ( ) {
+
+
+ //   document.querySelector(`.${name}-preloader`).style.display = 'none'
+    document.querySelector(`.${name}-preloader`).classList.add('hide-preloader')
+};
+
+
+manager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+
+
+   document.querySelector(`#${name}-preloader-text`).innerText = ( (itemsLoaded /itemsTotal) * 100 ).toFixed(0) + '%'
+};
+
+manager.onError = function ( url ) {
+
+	console.log( 'There was an error loading ' + url );
+
+};
+
+                const loader = new GLTFLoader(manager)
                 loader.load(modetoload, (gltf) =>{
                      let model = gltf.scene;
                      scene.add(model)
+
+                     model.traverse((child) =>{
+                        if(child.material && child.material.name == 'Card-background'){
+                          console.log(child)
+                           child.material.normalMap = loadtexture('nft-card-bump.png')
+                        }
+
+                     })
             
                 })
     
